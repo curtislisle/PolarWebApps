@@ -5,7 +5,7 @@
 
 function addVectorLayer(layer) {
 
-    d3.json("service/getdata/"+layer, function (error, jsonreturned) {
+    d3.json("service/getgeodata/"+layer, function (error, jsonreturned) {
         console.log(jsonreturned,"\n");
 
         // now that the data is back and loaded, setup the new map layer This has to be done inside this
