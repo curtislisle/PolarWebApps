@@ -7,6 +7,23 @@ from pymongo import Connection
 import string
 import tangelo
 
+
+def convertStringToFloatPoint(lng,lat):
+    print "(",lng,lat,")"
+    if lat[-1:] == "S":
+        outlat= -float(lat[:-1])
+    else:
+        outlat = float(lat[:-1])    
+    if lng[-1:] == "W":
+        outlng = -float(lng[:-1])
+    else:
+        outlng = float(lng[:-1])
+    point = {}
+    point['lat'] = outlat
+    point['lng'] = outlng
+    return point
+
+
 def run(tablename):
     # Create an empty response object.
     response = {}
@@ -34,14 +51,23 @@ def run(tablename):
     it = dataset_collection.find(querystring)
     results = [x for x in it]
 
-    # Create an object to structure the results.
-    response['count'] = it.count()
-    response['data'] = results
-
     connection.close()
 
     # Pack the results into the response object, and return it.
-    response['result'] = 'OK'
+
+    response['data'] = []
+
+    for i in range(it.count()):
+        try:
+            point = convertStringToFloatPoint(results[i]['stationLng'],results[i]['stationLat'])
+            results[i]['lng'] = point['lng']
+            #results[i]['lng'] = 160            
+            results[i]['lat'] = point['lat']
+            response['data'].append(results[i])  
+        except ValueError:
+            pass  
+    response['count'] = len(response['data'])
+    response['result'] = 'OK'    
 
     # Return the response object.
     tangelo.log(str(response))

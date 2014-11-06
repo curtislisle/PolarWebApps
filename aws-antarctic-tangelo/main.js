@@ -5,13 +5,14 @@
 
 function addVectorLayer(layer) {
 
-    d3.json("service/getgeodata/"+layer, function (error, jsonreturned) {
+    d3.json("service/getdata/"+layer, function (error, jsonreturned) {
         console.log(jsonreturned,"\n");
 
         // now that the data is back and loaded, setup the new map layer This has to be done inside this
         // call so the data is ready when it fires off.  Without this call inside the function, the layer could be 
         // added to the map before the data load is finished
 
+        /*
 		var markers = new OpenLayers.Layer.Vector("Markers", {
 			projection: 'EPSG:4326',
 			strategies: [new OpenLayers.Strategy.Fixed()],
@@ -20,11 +21,60 @@ function addVectorLayer(layer) {
 				format: new OpenLayers.Format.GeoJSON()
 			})
 		});
+*/
+
+        // we want opaque external graphics and non-opaque internal graphics
+        var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+        layer_style.fillOpacity = 0.2;
+        layer_style.graphicOpacity = 1;
+
+        /*
+         * Blue style
+         */
+        var style_blue = OpenLayers.Util.extend({}, layer_style);
+        style_blue.strokeColor = "blue";
+        style_blue.fillColor = "blue";
+        style_blue.graphicName = "star";
+        style_blue.pointRadius = 5;
+        style_blue.strokeWidth = 2;
+        style_blue.rotation = 45;
+        style_blue.strokeLinecap = "butt";
+
+		var featureList = []
+		var markers = new OpenLayers.Layer.Vector("Markers",{projection: 'EPSG:3031'});
+		for (var i = jsonreturned['data'].length - 1; i >= 0; i--) {
+			console.log(jsonreturned['data'][i]['lng'], jsonreturned['data'][i]['lat'])
+			var lng_float = jsonreturned['data'][i]['lng']
+			var lat_float = jsonreturned['data'][i]['lat']
+			//var point = new OpenLayers.Geometry.Point(jsonreturned['data'][i]['lng'], jsonreturned['data'][i]['lat']);
+			var point = new OpenLayers.Geometry.Point(lng_float, lat_float);
+
+            var pointFeature = new OpenLayers.Feature.Vector(point,null,style_blue);
+            featureList.push(pointFeature)
+		}	
+		markers.addFeatures(featureList);
+		antarctic.map.addLayer(markers);
+		//console.log(featureList)
+
+		/*
+		var markers = new OpenLayers.Layer.Vector( "Markers" );
+		antarctic.map.addLayer(markers);
+
+		var size = new OpenLayers.Size(21,25);
+		var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+		var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
+
+		for (var i = jsonreturned.length - 1; i >= 0; i--) {
+			if (i == 0) {
+				markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(jsonreturned['data'][i]['lng'], jsonreturned['data'][i]['lat']),icon));
+			} else {
+				markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(jsonreturned['data'][i]['lng'], jsonreturned['data'][i]['lat']),icon.clone()));
+			}
+		};
+		*/
 
 		antarctic.markers = markers
 		map = antarctic.map
-
-		map.addLayer(markers);
 
 		var featctl = new OpenLayers.Control.SelectFeature(markers);
 		map.addControl(featctl);
@@ -93,5 +143,5 @@ window.onload = function () {
 	)
 
 	map.addLayer(tiles);
-	addVectorLayer('aws');
+	addVectorLayer('all_stations');
 }
