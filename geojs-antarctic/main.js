@@ -20,7 +20,7 @@ function addVectorLayer(layer) {
 			var lat_float = jsonreturned['data'][i]['lat']
 			// add a point to the d3 layer
 			markers.createFeature("point")
-				.positions(lng_float,lat_float)
+				.position(lng_float,lat_float)
 				.style({color: [1,0,0],size:[10]});
 
 		}	
@@ -35,7 +35,7 @@ function resize() {
 }
  
 
-function addBaseMape() {
+function addBaseLayer() {
     var map;
 
     map = geo.map({
@@ -62,7 +62,7 @@ window.onload = function () {
     $(window).resize(resize);
 
     addBaseLayer();
-	addVectorLayer('all_stations');
+	addVectorLayer('stations');
 	resize();
 
 }
