@@ -1,7 +1,5 @@
-
-
-
-
+// Global
+var antarctic = {};
 
 function addVectorLayer(layer) {
 	console.log("doing lookup for markers")
@@ -20,18 +18,20 @@ function addVectorLayer(layer) {
 			var lat_float = jsonreturned['data'][i]['lat']
 			// add a point to the d3 layer
 			markers.createFeature("point")
-				.position(lng_float,lat_float)
-				.style({color: [1,0,0],size:[10]});
+			        .data({x:lng_float, y:lat_float})
+				.position(function(d) { return {x: d.x, y: d.y}; )
+				.style(fillColor: function(d) { return {r: 0, g: 1, b: 0}});
 
 		}	
 		// save markers layer globally
 		antarctic.markers = markers
+		antarctic.map.draw();
 	});
 }
 
 
 function resize() {
-    map.resize(0, 0, $('#map').width(), $('#map').height());
+    antarctic.map.resize(0, 0, $('#map').width(), $('#map').height());
 }
  
 
@@ -50,7 +50,7 @@ function addBaseLayer() {
 // this function is called as soon as the page is finished loading
 window.onload = function () {   
 
-	antarctic = {}
+	
 	antarctic.map = null
 	antarctic.markers = null
 
@@ -62,8 +62,8 @@ window.onload = function () {
     $(window).resize(resize);
 
     addBaseLayer();
-	addVectorLayer('stations');
-	resize();
+    resize();
+    addVectorLayer('stations');
 
 }
 
