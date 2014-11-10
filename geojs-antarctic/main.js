@@ -20,7 +20,7 @@ function addVectorLayer(layer) {
 			markers.createFeature("point")
 			        .data({x:lng_float, y:lat_float})
 				.position(function(d) { return {x: d.x, y: d.y}; )
-				.style({fillColor: function(d) { return {r: 0, g: 1, b: 0}});
+				.style(fillColor: function(d) { return {r: 0, g: 1, b: 0}});
 
 		}	
 		// save markers layer globally
