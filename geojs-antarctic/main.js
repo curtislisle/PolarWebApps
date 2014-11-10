@@ -18,9 +18,9 @@ function addVectorLayer(layer) {
 			var lat_float = jsonreturned['data'][i]['lat']
 			// add a point to the d3 layer
 			markers.createFeature("point")
-			        .data({x:lng_float, y:lat_float})
-				.position(function(d) { return {x: d.x, y: d.y}; )
-				.style(fillColor: function(d) { return {r: 0, g: 1, b: 0}});
+			    .data([{x:lng_float, y:lat_float}])
+				.position(function(d) { return {x: d.x, y: d.y};} )
+				.style("fillColor", function(d) { return {r: 0, g: 1, b: 0};});
 
 		}	
 		// save markers layer globally
